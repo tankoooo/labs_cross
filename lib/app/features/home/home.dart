@@ -1,4 +1,4 @@
-// Реэкспорт экрана, данных и виджетов
-export 'movie_data.dart';
+// Реэкспорт экрана, виджетов и BLoC
 export 'home_screen.dart';
 export 'widgets/widgets.dart';
+export 'bloc/home.dart';

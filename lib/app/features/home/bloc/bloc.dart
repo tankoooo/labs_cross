@@ -1,0 +1,2 @@
+// Реэкспорт
+export 'home.dart';

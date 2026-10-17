@@ -1,7 +1,11 @@
+// Подключаем Material Design
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';          // для context.push
+// Подключаем GoRouter
+import 'package:go_router/go_router.dart';
+// Подключаем цвета темы
 import '../../../theme/theme.dart';
-import '../movie_data.dart';                         // модель Movie
+// Подключаем модель
+import '../../../../domain/models/movie/movie.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
@@ -11,7 +15,7 @@ class MovieCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      // Переход на детальный экран
+      // Переход на детальный экран по IMDb ID
       onTap: () => context.push('/movie/${movie.id}'),
       borderRadius: BorderRadius.circular(16),
       child: Container(
@@ -26,14 +30,30 @@ class MovieCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Постер
+            // Постер из сети (OMDb)
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                movie.imagePath,
+              child: Image.network(
+                movie.poster,
                 width: 90,
                 height: 130,
                 fit: BoxFit.cover,
+                // Пока грузится — показываем прогресс
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return Container(
+                    width: 90,
+                    height: 130,
+                    color: ThemeColors.surface,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: ThemeColors.accent,
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  );
+                },
+                // Если ошибка — иконка
                 errorBuilder: (_, _, _) => Container(
                   width: 90,
                   height: 130,
@@ -48,6 +68,7 @@ class MovieCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Название
                   Text(
                     movie.title,
                     style: const TextStyle(
@@ -56,13 +77,23 @@ class MovieCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 4),
+                  // Год
+                  Text(
+                    movie.year,
+                    style: const TextStyle(
+                      color: ThemeColors.grey,
+                      fontSize: 13,
+                    ),
+                  ),
                   const SizedBox(height: 8),
+                  // Подпись
                   const Text(
                     'Моё мнение',
                     style: TextStyle(color: ThemeColors.grey, fontSize: 13),
                   ),
                   const SizedBox(height: 6),
-                  // Прогресс-бар
+                  // Прогресс-бар + число
                   Row(
                     children: [
                       Expanded(
